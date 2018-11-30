@@ -1,0 +1,31 @@
+package com.lidp.customer.models;
+
+import java.io.File;
+
+public class Usage {
+	
+	private long maxMemory;
+	private long freeMemory;
+	private long totalHardDriveSpace;
+	private long remainingHardDriveSpace;
+	private long cpuUsage;
+	private long availableProcessors;
+	
+	public Usage() {
+		super();
+		this.maxMemory = Runtime.getRuntime().maxMemory();
+		this.freeMemory = Runtime.getRuntime().freeMemory();
+		
+	}
+	
+	private void setHardDriveSpace() {
+		File[] roots = File.listRoots();
+		for (File root : roots) {
+		      this.totalHardDriveSpace = root.getTotalSpace();
+		      this.remainingHardDriveSpace = root.getFreeSpace();
+		 }
+		
+	}
+	
+
+}

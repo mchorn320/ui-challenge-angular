@@ -1,0 +1,116 @@
+package com.lidp.customer.models;
+
+import java.io.File;
+import java.lang.management.ManagementFactory;
+
+import javax.management.Attribute;
+import javax.management.AttributeList;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+
+
+
+public class Usage {
+	
+	private long maxMemory;
+	private long freeMemory;
+	private long totalHardDriveSpace;
+	private long remainingHardDriveSpace;
+	private double cpuUsage;
+	private int availableProcessors;
+	
+	public Usage() {
+		super();
+		this.maxMemory = Runtime.getRuntime().maxMemory();
+		this.freeMemory = Runtime.getRuntime().freeMemory();
+		setHardDriveSpace();
+		this.availableProcessors = Runtime.getRuntime().availableProcessors();
+		this.cpuUsage = this.getProcessCpuLoad();
+		
+	}
+	
+	private void setHardDriveSpace() {
+		File[] roots = File.listRoots();
+		for (File root : roots) {
+		      this.totalHardDriveSpace = root.getTotalSpace();
+		      this.remainingHardDriveSpace = root.getFreeSpace();
+		 }
+		
+	}
+	
+	private double getProcessCpuLoad() {
+
+	    MBeanServer mbs    = ManagementFactory.getPlatformMBeanServer();
+	    double val = 0.0;
+	    try {
+	    	ObjectName name    = ObjectName.getInstance("java.lang:type=OperatingSystem");
+	    	AttributeList list = mbs.getAttributes(name, new String[]{ "ProcessCpuLoad" });
+
+	    	if (list.isEmpty()) {     
+	    		return Double.NaN;
+	    	}
+
+	    	Attribute att = (Attribute)list.get(0);
+	    	val  = (Double)att.getValue();
+
+	    	// usually takes a couple of seconds before we get real values
+	    	if (val == -1.0) {
+	    		val = Double.NaN;
+	    	}
+	    	// returns a percentage value with 1 decimal point precision
+	    	val = ((int)(val * 1000) / 10.0);
+	    }catch(Exception ex) {
+	    	return val;
+	    }
+	    return val;
+	}
+
+	public long getMaxMemory() {
+		return maxMemory;
+	}
+
+	public void setMaxMemory(long maxMemory) {
+		this.maxMemory = maxMemory;
+	}
+
+	public long getFreeMemory() {
+		return freeMemory;
+	}
+
+	public void setFreeMemory(long freeMemory) {
+		this.freeMemory = freeMemory;
+	}
+
+	public long getTotalHardDriveSpace() {
+		return totalHardDriveSpace;
+	}
+
+	public void setTotalHardDriveSpace(long totalHardDriveSpace) {
+		this.totalHardDriveSpace = totalHardDriveSpace;
+	}
+
+	public long getRemainingHardDriveSpace() {
+		return remainingHardDriveSpace;
+	}
+
+	public void setRemainingHardDriveSpace(long remainingHardDriveSpace) {
+		this.remainingHardDriveSpace = remainingHardDriveSpace;
+	}
+
+	public double getCpuUsage() {
+		return cpuUsage;
+	}
+
+	public void setCpuUsage(double cpuUsage) {
+		this.cpuUsage = cpuUsage;
+	}
+
+	public int getAvailableProcessors() {
+		return availableProcessors;
+	}
+
+	public void setAvailableProcessors(int availableProcessors) {
+		this.availableProcessors = availableProcessors;
+	}
+	
+}

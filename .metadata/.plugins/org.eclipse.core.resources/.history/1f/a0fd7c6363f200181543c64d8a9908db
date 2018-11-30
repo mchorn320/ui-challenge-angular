@@ -1,0 +1,5 @@
+package com.lidp.customer.models;
+
+public class Usage {
+
+}
